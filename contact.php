@@ -1,3 +1,25 @@
+<?php
+include_once("header.php");
+include_once("Database/db_config.php");
+$statusMessage = "";
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_contact'])) {
+    if (isset($con)) {
+        $firstname = mysqli_real_escape_string($con, $_POST['firstname']);
+        $email = mysqli_real_escape_string($con, $_POST['email']);
+        $subject = mysqli_real_escape_string($con, $_POST['subject']);
+        $message = mysqli_real_escape_string($con, $_POST['message']);
+
+        $query = "INSERT INTO contact_inquiries (firstname, email, subject, message) VALUES ('$firstname', '$email', '$subject', '$message')";
+        if (mysqli_query($con, $query)) {
+            $statusMessage = "<div style='color:green; padding:10px; background:#e8f5e9; border-radius:5px; margin-bottom:15px;'>Thank you! Your inquiry has been submitted successfully.</div>";
+        } else {
+            $statusMessage = "<div style='color:red; padding:10px; background:#ffebee; border-radius:5px; margin-bottom:15px;'>Error: Could not submit your inquiry. Please try again.</div>";
+        }
+    } else {
+        $statusMessage = "<div style='color:red; padding:10px; background:#ffebee; border-radius:5px; margin-bottom:15px;'>Database connection error.</div>";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -111,8 +133,6 @@
 
 <body>
 
-    <?php include_once("header.php"); ?>
-
     <!--main section ne grid karva mate-->
     <div class="section">
 
@@ -148,28 +168,25 @@
             <div class="card">
                 <h2>Contact Form</h2>
 
-                <form onsubmit="return sendMessage()">
+                <?php if(!empty($statusMessage)) echo $statusMessage; ?>
+                <form method="POST" action="">
                     <div class="form-group">
                         <label>First Name</label>
                         <input type="text"
                             name="firstname"
                             id="firstname"
-                            data-validation="required min"
-                            data-min="2">
-                        <span class="text-danger" id="firstname_error"></span>
+                            required>
                     </div>
                     <div class="form-group">
                         <label>Email</label>
                         <input type="email"
                             name="email"
                             id="email"
-                            data-validation="required email">
-                        <span id="email_error"></span>
+                            required>
                     </div>
-                    <input type="text" id="subject" placeholder="Subject">
-                    <textarea id="message" placeholder="Write your message"></textarea>
-                    <button type="submit">Submit Inquiry</button>
-                    <div id="status"></div>
+                    <input type="text" name="subject" id="subject" placeholder="Subject" required>
+                    <textarea name="message" id="message" placeholder="Write your message" required></textarea>
+                    <button type="submit" name="submit_contact">Submit Inquiry</button>
                 </form>
             </div>
         </div>
@@ -218,3 +235,4 @@
 </body>
 
 </html>
+

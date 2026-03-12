@@ -125,6 +125,16 @@ include_once 'header.php';
 
     <!--navbar-->
     <div class="container">
+        <?php if (isset($_SESSION['login_success_msg'])): ?>
+            <div class="alert alert-success alert-dismissible fade show mt-3 mb-0" role="alert">
+                <?php 
+                echo $_SESSION['login_success_msg']; 
+                // Unset the message so it only shows once
+                unset($_SESSION['login_success_msg']);
+                ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
 
         <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
             <div class="carousel-inner">
@@ -274,7 +284,6 @@ include_once 'header.php';
             </div>
         </section>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

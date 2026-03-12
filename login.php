@@ -1,5 +1,63 @@
-<?php include_once 'header.php'; ?>
+<?php
+session_start();
+include_once 'Database/db_config.php';
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email_or_id = $_POST['email'] ?? '';
+    $password = $_POST['pass'] ?? '';
+
+    if (empty($email_or_id) || empty($password)) {
+        $login_error = "Please enter both Email/User ID and Password.";
+    } else {
+        // 1. Check if it's an admin login
+        $stmt_admin = $con->prepare("SELECT id, password FROM admins WHERE user_id = ?");
+        $stmt_admin->bind_param("s", $email_or_id);
+        $stmt_admin->execute();
+        $result_admin = $stmt_admin->get_result();
+
+        if ($result_admin->num_rows > 0) {
+            $admin = $result_admin->fetch_assoc();
+            if (password_verify($password, $admin['password'])) {
+                // Admin login successful
+                $_SESSION['admin_logged_in'] = true;
+                $_SESSION['admin_user_id'] = $email_or_id;
+                header("Location: admin_dashboard.php");
+                exit();
+            } else {
+                $login_error = "Invalid Admin ID or Password.";
+            }
+        } else {
+            // 2. Check if it's a regular user login
+            $stmt_user = $con->prepare("SELECT id, password, first_name, last_name FROM register WHERE email = ?");
+            $stmt_user->bind_param("s", $email_or_id);
+            $stmt_user->execute();
+            $result_user = $stmt_user->get_result();
+
+            if ($result_user->num_rows > 0) {
+                $user = $result_user->fetch_assoc();
+                if (password_verify($password, $user['password'])) {
+                    // User login successful
+                    $_SESSION['user_logged_in'] = true;
+                    $_SESSION['user_email'] = $email_or_id;
+                    $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
+                    $_SESSION['login_success_msg'] = "Welcome back, " . htmlspecialchars($user['first_name']) . "!";
+                    header("Location: user_dashboard.php");
+                    exit();
+                } else {
+                    $login_error = "Invalid Email or Password.";
+                }
+            } else {
+                $login_error = "No user found with that Email or User ID.";
+            }
+
+            $stmt_user->close();
+        }
+        $stmt_admin->close();
+    }
+}
+
+include_once 'header.php';
+?>
 <style>
 .login-page {
     background: linear-gradient(to right, #2c3e50, #597ca7);
@@ -72,9 +130,14 @@
             <p class="text-center mb-4">Access your KK Pharma account</p>
 
             <form id="loginForm" action="login.php" method="post">
+                <?php if (isset($login_error)): ?>
+                    <div class="alert alert-danger" role="alert" style="font-size: 14px; padding: 10px;">
+                        <?php echo $login_error; ?>
+                    </div>
+                <?php endif; ?>
 
                 <div class="mb-3">
-                    <label class="form-label">Email</label>
+                    <label class="form-label">Email / User ID</label>
                     <input type="text" class="form-control" id="email" name="email">
                     <span id="email_error" class="error"></span>
                 </div>
@@ -114,10 +177,7 @@ $(document).ready(function() {
         let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (email === "") {
-            $("#email_error").text("Email is required");
-            isValid = false;
-        } else if (!emailPattern.test(email)) {
-            $("#email_error").text("Enter valid email");
+            $("#email_error").text("Email or User ID is required");
             isValid = false;
         }
 
@@ -134,3 +194,4 @@ $(document).ready(function() {
 
 </body>
 </html>
+
