@@ -3,11 +3,9 @@ include_once("header.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>About Us | KK Pharmaceutical</title>
-
     <style>
         * {
             margin: 0;
@@ -18,9 +16,7 @@ include_once("header.php");
 
         body {
             background: #eef2f6;
-
         }
-
     
         /* HERO */
         .hero {
@@ -41,14 +37,12 @@ include_once("header.php");
             color: #555;
         }
 
-        /* boc no ::shadow batave mate */
         .hero-image img {
             width: 100%;
             border-radius: 20px;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
         }
 
-        /* red colour ni border ne adjust karva mate  */
         .timeline {
             max-width: 1100px;
             margin: 80px auto;
@@ -58,16 +52,12 @@ include_once("header.php");
         .timeline::before {
             content: '';
             position: absolute;
-            /* position maintain karva mate */
             left: 50%;
             width: 4px;
             height: 100%;
-            /* height full cover karva mate  */
-            ;
             background: #e74c3c;
         }
 
-        /* line pase je box che ene proper middle ma adjust karva mate  */
         .timeline-box {
             width: 45%;
             padding: 30px;
@@ -75,15 +65,14 @@ include_once("header.php");
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
             margin-bottom: 60px;
             position: relative;
+            background: white;
         }
 
         .timeline-box.left {
-            /* left side na box ne adjust karva mate  */
             left: 0;
         }
 
         .timeline-box.right {
-            /* right side na box ne adjust karva mate  */
             left: 55%;
         }
 
@@ -95,7 +84,6 @@ include_once("header.php");
             height: 20px;
             background: #e74c3c;
             border-radius: 50%;
-            /* round karva mate red */
         }
 
         .timeline-box.left::after {
@@ -116,9 +104,7 @@ include_once("header.php");
             color: #555;
         }
 
-
         .values {
-            /*our core value ma content set karva mate */
             background: linear-gradient(135deg, #2c3e50, #34495e);
             padding: 80px;
             color: white;
@@ -157,9 +143,6 @@ include_once("header.php");
             margin: 15px 0 10px;
         }
 
-
-
-        /* RESPONSIVE */
         @media(max-width:900px) {
             .hero {
                 grid-template-columns: 1fr;
@@ -190,40 +173,26 @@ include_once("header.php");
     <!-- HERO -->
     <section class="hero">
         <div class="hero-text">
-            <h2>Advancing Healthcare with Trust & Innovation</h2>
-            <p>
-                KK Pharmaceutical is a trusted name in the pharmaceutical industry,
-                dedicated to manufacturing high-quality, affordable medicines.
-                With decades of experience, we combine innovation, ethics,
-                and patient-centric care to improve lives worldwide.
-            </p>
+            <h2><?php echo htmlspecialchars(get_content('about_hero_title', 'Advancing Healthcare with Trust & Innovation')); ?></h2>
+            <p><?php echo htmlspecialchars(get_content('about_hero_desc', 'KK Pharmaceutical is a trusted name in the pharmaceutical industry...')); ?></p>
+            
             <section class="mission">
-                <h2>Our Mission, Vision & Commitment</h2>
+                <h2><?php echo htmlspecialchars(get_content('about_section2_title', 'Our Mission, Vision & Commitment')); ?></h2>
 
                 <div class="mission-grid">
                     <div class="mission-card">
-                        <h3>&#127919; Our Mission</h3>
-                        <p>
-                            To develop, manufacture, and deliver high-quality pharmaceutical
-                            products that improve health outcomes and enhance the quality of life
-                            for patients across all regions.
-                        </p>
+                        <h3><?php echo htmlspecialchars(get_content('about_mission_title', '🎯 Our Mission')); ?></h3>
+                        <p><?php echo htmlspecialchars(get_content('about_mission_desc', 'To develop, manufacture, and deliver high-quality pharmaceutical products...')); ?></p>
                     </div>
 
                     <div class="mission-card">
-                        <h3>👁 Our Vision</h3>
-                        <p>
-                            To be a globally trusted pharmaceutical company recognized for
-                            innovation, ethical practices, and affordable healthcare solutions.
-                        </p>
+                        <h3><?php echo htmlspecialchars(get_content('about_vision_title', '👁 Our Vision')); ?></h3>
+                        <p><?php echo htmlspecialchars(get_content('about_vision_desc', 'To be a globally trusted pharmaceutical company recognized for innovation...')); ?></p>
                     </div>
 
                     <div class="mission-card">
-                        <h3>🤝 Our Commitment</h3>
-                        <p>
-                            We are committed to patient safety, regulatory compliance, continuous
-                            improvement, and sustainable healthcare development.
-                        </p>
+                        <h3><?php echo htmlspecialchars(get_content('about_commitment_title', '🤝 Our Commitment')); ?></h3>
+                        <p><?php echo htmlspecialchars(get_content('about_commitment_desc', 'We are committed to patient safety, regulatory compliance...')); ?></p>
                     </div>
                 </div>
             </section>
@@ -236,53 +205,43 @@ include_once("header.php");
 
     <!-- TIMELINE -->
     <section class="timeline">
-
         <div class="timeline-box left">
-            <h3>💊 Healthcare Leadership</h3>
-            <p>
-                Our state-of-the-art manufacturing facilities and strict quality
-                control systems ensure world-class pharmaceutical products
-                that meet international standards.
-            </p>
+            <h3><?php echo htmlspecialchars(get_content('about_timeline1_title', '💊 Healthcare Leadership')); ?></h3>
+            <p><?php echo htmlspecialchars(get_content('about_timeline1_desc', 'Our state-of-the-art manufacturing facilities and strict quality control...')); ?></p>
         </div>
 
         <div class="timeline-box right">
-            <h3>🌍 Global Presence</h3>
-            <p>
-                KK Pharmaceutical continues to expand its global footprint,
-                supplying essential medicines through strong international
-                partnerships and distribution networks.
-            </p>
+            <h3><?php echo htmlspecialchars(get_content('about_timeline2_title', '🌍 Global Presence')); ?></h3>
+            <p><?php echo htmlspecialchars(get_content('about_timeline2_desc', 'KK Pharmaceutical continues to expand its global footprint...')); ?></p>
         </div>
-
     </section>
 
     <!-- VALUES -->
     <section class="values">
-        <h2>Our Core Values</h2>
+        <h2><?php echo htmlspecialchars(get_content('about_values_title', 'Our Core Values')); ?></h2>
         <div class="value-grid">
             <div class="value-card">
-                <span>✔</span>
-                <h4>Quality</h4>
-                <p>Uncompromised product excellence</p>
+                <span><?php echo htmlspecialchars(get_content('about_value1_icon', '✔')); ?></span>
+                <h4><?php echo htmlspecialchars(get_content('about_value1_title', 'Quality')); ?></h4>
+                <p><?php echo htmlspecialchars(get_content('about_value1_desc', 'Uncompromised product excellence')); ?></p>
             </div>
 
             <div class="value-card">
-                <span>❤️</span>
-                <h4>Patient Focus</h4>
-                <p>Healthcare solutions that matter</p>
+                <span><?php echo htmlspecialchars(get_content('about_value2_icon', '❤️')); ?></span>
+                <h4><?php echo htmlspecialchars(get_content('about_value2_title', 'Patient Focus')); ?></h4>
+                <p><?php echo htmlspecialchars(get_content('about_value2_desc', 'Healthcare solutions that matter')); ?></p>
             </div>
 
             <div class="value-card">
-                <span>⚙</span>
-                <h4>Innovation</h4>
-                <p>Research-driven growth</p>
+                <span><?php echo htmlspecialchars(get_content('about_value3_icon', '⚙')); ?></span>
+                <h4><?php echo htmlspecialchars(get_content('about_value3_title', 'Innovation')); ?></h4>
+                <p><?php echo htmlspecialchars(get_content('about_value3_desc', 'Research-driven growth')); ?></p>
             </div>
 
             <div class="value-card">
-                <span>🤝</span>
-                <h4>Integrity</h4>
-                <p>Ethical & transparent practices</p>
+                <span><?php echo htmlspecialchars(get_content('about_value4_icon', '🤝')); ?></span>
+                <h4><?php echo htmlspecialchars(get_content('about_value4_title', 'Integrity')); ?></h4>
+                <p><?php echo htmlspecialchars(get_content('about_value4_desc', 'Ethical & transparent practices')); ?></p>
             </div>
         </div>
     </section>
@@ -290,5 +249,4 @@ include_once("header.php");
     <?php include_once("footer.php"); ?>
 
 </body>
-
 </html>

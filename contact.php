@@ -1,6 +1,7 @@
 <?php
 include_once("header.php");
-include_once("Database/db_config.php");
+// db_config is already included in header.php but we can leave it if we want.
+// Since header.php includes it, get_content is available.
 $statusMessage = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_contact'])) {
     if (isset($con)) {
@@ -41,22 +42,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_contact'])) {
             color: #2c3e50;
         }
 
-        /* grid vada content ne proper vache lavla mate*/
         .section {
             max-width: 1400px;
             margin: 50px auto;
             padding: 20px;
         }
 
-        /*2  partition karva mate*/
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
         }
 
-        /* card no color ne set karva mate and padding rakhva mate 
-        ena headeing ne highlight karva mate ne paragraph na content ne set karva mate   */
         .card {
             background: white;
             padding: 35px;
@@ -74,13 +71,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_contact'])) {
             color: #34495e;
         }
 
-        /*contact foem ma as list na formate ma na batave evu bana va mate list-style -none */
         .list li {
             margin-bottom: 10px;
             list-style: none;
         }
 
-        /* form na input ne set karva mate ne box ne set karva mate  */
         form input,
         form textarea {
             width: 100%;
@@ -91,12 +86,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_contact'])) {
             font-size: 16px;
         }
 
-    /* text area ni size proer ne hiight define karva mate*/
         textarea {
             resize: none;
             height: 130px;
         }
-        /*button no color change karva mate and eni fonet size ne curocr jai tyare pointer ne chnage karva mate*/
+
         button {
             background: #2c3e50;
             color: white;
@@ -104,15 +98,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_contact'])) {
             font-size: 20px;
             border-radius: 10px;
             cursor: pointer;
+            border: none;
         }
 
         button:hover {
             background: #1f2d3a;
         }
 
-
-
-        /* wothout this grid nu formtte one line ma aave ene set karva mate*/ 
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -120,9 +112,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_contact'])) {
             margin-top: 40px;
         }
 
-
-
-        /* RESPONSIVE */
         @media(max-width:900px) {
             .grid {
                 grid-template-columns: 1fr;
@@ -133,38 +122,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_contact'])) {
 
 <body>
 
-    <!--main section ne grid karva mate-->
     <div class="section">
 
         <div class="grid">
 
-            <!--ek baju company no add karva mate info-->
             <div class="card">
-                <h2>About KK Pharmaceutical</h2>
-                <p>
-                    KK Pharmaceutical is a research-driven pharmaceutical company
-                    focused on developing, manufacturing, and distributing
-                    high-quality medicines across therapeutic segments.
-                </p>
-                <p>
-                    Our operations comply with WHO-GMP standards, ensuring safety,
-                    efficacy, and consistency in every product we deliver.
-                </p>
+                <h2><?php echo htmlspecialchars(get_content('contact_page_about_title', 'About KK Pharmaceutical')); ?></h2>
+                <p><?php echo htmlspecialchars(get_content('contact_page_about_desc1', 'KK Pharmaceutical is a research-driven pharmaceutical company...')); ?></p>
+                <p><?php echo htmlspecialchars(get_content('contact_page_about_desc2', 'Our operations comply with WHO-GMP standards...')); ?></p>
 
-                <h3>📍 Corporate Office</h3>
-                <p>
-                    Pharma Industrial Estate, India
-                </p>
+                <h3><?php echo htmlspecialchars(get_content('contact_page_corporate_title', '📍 Corporate Office')); ?></h3>
+                <p><?php echo htmlspecialchars(get_content('contact_page_corporate_desc', 'Pharma Industrial Estate, India')); ?></p>
 
-                <h3> &#128340; Business Hours</h3>
+                <h3><?php echo htmlspecialchars(get_content('contact_page_hours_title', '🕒 Business Hours')); ?></h3>
                 <ul class="list">
-                    <li>Monday – Friday: 9:00 AM – 6:00 PM</li>
-                    <li>Saturday: 9:00 AM – 2:00 PM</li>
-                    <li>Sunday: Closed</li>
+                    <li><?php echo htmlspecialchars(get_content('contact_hours1', 'Monday – Friday: 9:00 AM – 6:00 PM')); ?></li>
+                    <li><?php echo htmlspecialchars(get_content('contact_hours2', 'Saturday: 9:00 AM – 2:00 PM')); ?></li>
+                    <li><?php echo htmlspecialchars(get_content('contact_hours3', 'Sunday: Closed')); ?></li>
                 </ul>
             </div>
 
-            <!--ek baju contact form add kerva mate-->
             <div class="card">
                 <h2>Contact Form</h2>
 
@@ -172,17 +149,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_contact'])) {
                 <form method="POST" action="">
                     <div class="form-group">
                         <label>First Name</label>
-                        <input type="text"
-                            name="firstname"
-                            id="firstname"
-                            required>
+                        <input type="text" name="firstname" id="firstname" required>
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email"
-                            name="email"
-                            id="email"
-                            required>
+                        <input type="email" name="email" id="email" required>
                     </div>
                     <input type="text" name="subject" id="subject" placeholder="Subject" required>
                     <textarea name="message" id="message" placeholder="Write your message" required></textarea>
@@ -194,45 +165,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_contact'])) {
         <!-- DEPARTMENTS -->
         <div class="info-grid">
             <div class="card">
-                <h3>&#128222; Sales & Marketing</h3>
-                <p>sales@kkpharma.com<br>+91 98765 11111</p>
+                <h3><?php echo htmlspecialchars(get_content('contact_dept1_title', '📞 Sales & Marketing')); ?></h3>
+                <p><?php echo htmlspecialchars(get_content('contact_dept1_email', 'sales@kkpharma.com')); ?><br><?php echo htmlspecialchars(get_content('contact_dept1_phone', '+91 98765 11111')); ?></p>
             </div>
 
             <div class="card">
-                <h3>🧪 Medical & QA</h3>
-                <p>medical@kkpharma.com<br>+91 98765 22222</p>
+                <h3><?php echo htmlspecialchars(get_content('contact_dept2_title', '🧪 Medical & QA')); ?></h3>
+                <p><?php echo htmlspecialchars(get_content('contact_dept2_email', 'medical@kkpharma.com')); ?><br><?php echo htmlspecialchars(get_content('contact_dept2_phone', '+91 98765 22222')); ?></p>
             </div>
 
             <div class="card">
-                <h3>&#128230; Distribution</h3>
-                <p>distribution@kkpharma.com<br>+91 98765 33333</p>
+                <h3><?php echo htmlspecialchars(get_content('contact_dept3_title', '📦 Distribution')); ?></h3>
+                <p><?php echo htmlspecialchars(get_content('contact_dept3_email', 'distribution@kkpharma.com')); ?><br><?php echo htmlspecialchars(get_content('contact_dept3_phone', '+91 98765 33333')); ?></p>
             </div>
 
             <div class="card">
-                <h3>&#9888; Pharmacovigilance</h3>
+                <h3><?php echo htmlspecialchars(get_content('contact_dept4_title', '⚠️ Pharmacovigilance')); ?></h3>
                 <p>
-                    Report adverse drug reactions<br>
-                    safety@kkpharma.com
+                    <?php echo htmlspecialchars(get_content('contact_dept4_desc', 'Report adverse drug reactions')); ?><br>
+                    <?php echo htmlspecialchars(get_content('contact_dept4_email', 'safety@kkpharma.com')); ?>
                 </p>
             </div>
         </div>
 
         <!-- FAQ -->
         <div class="card" style="margin-top:40px;">
-            <h2>Frequently Asked Questions</h2>
-            <p><strong>Do you offer third-party manufacturing?</strong><br>Yes, we provide WHO-GMP certified manufacturing services.</p>
-            <p><strong>How can I become a distributor?</strong><br>Contact our sales department with your company profile.</p>
-            <p><strong>Are your products regulatory approved?</strong><br>Yes, all products comply with national regulatory standards.</p>
+            <h2><?php echo htmlspecialchars(get_content('contact_faq_title', 'Frequently Asked Questions')); ?></h2>
+            <p><strong><?php echo htmlspecialchars(get_content('contact_faq1_q', 'Do you offer third-party manufacturing?')); ?></strong><br><?php echo htmlspecialchars(get_content('contact_faq1_a', 'Yes, we provide...')); ?></p>
+            <p><strong><?php echo htmlspecialchars(get_content('contact_faq2_q', 'How can I become a distributor?')); ?></strong><br><?php echo htmlspecialchars(get_content('contact_faq2_a', 'Contact our sales department...')); ?></p>
+            <p><strong><?php echo htmlspecialchars(get_content('contact_faq3_q', 'Are your products regulatory approved?')); ?></strong><br><?php echo htmlspecialchars(get_content('contact_faq3_a', 'Yes, all products comply...')); ?></p>
         </div>
-
-
 
     </div>
 
     <?php include_once("footer.php"); ?>
 
-
 </body>
-
 </html>
-

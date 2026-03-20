@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         } else {
             // 2. Check if it's a regular user login
-            $stmt_user = $con->prepare("SELECT id, password, first_name, last_name FROM register WHERE email = ?");
+            $stmt_user = $con->prepare("SELECT id, password, first_name, last_name, verified FROM register WHERE email = ?");
             $stmt_user->bind_param("s", $email_or_id);
             $stmt_user->execute();
             $result_user = $stmt_user->get_result();
@@ -36,13 +36,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($result_user->num_rows > 0) {
                 $user = $result_user->fetch_assoc();
                 if (password_verify($password, $user['password'])) {
-                    // User login successful
-                    $_SESSION['user_logged_in'] = true;
-                    $_SESSION['user_email'] = $email_or_id;
-                    $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
-                    $_SESSION['login_success_msg'] = "Welcome back, " . htmlspecialchars($user['first_name']) . "!";
-                    header("Location: user_dashboard.php");
-                    exit();
+                    if ($user['verified'] == 1) {
+                        // User login successful
+                        $_SESSION['user_logged_in'] = true;
+                        $_SESSION['user_email'] = $email_or_id;
+                        $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
+                        $_SESSION['login_success_msg'] = "Welcome back, " . htmlspecialchars($user['first_name']) . "!";
+                        header("Location: user_dashboard.php");
+                        exit();
+                    } else {
+                        $login_error = "Please verify your email address to login.";
+                    }
                 } else {
                     $login_error = "Invalid Email or Password.";
                 }
@@ -54,6 +58,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $stmt_admin->close();
     }
+}
+
+$success_msg = "";
+if (isset($_GET['msg']) && $_GET['msg'] == 'verified') {
+    $success_msg = "Email verified successfully! You can now login.";
+} elseif (isset($_COOKIE['success'])) {
+    $success_msg = $_COOKIE['success'];
+    // Clear the cookie so the message only shows once
+    setcookie("success", "", time() - 3600, "/");
 }
 
 include_once 'header.php';
@@ -117,22 +130,27 @@ include_once 'header.php';
 
     <div class="image-section">
         <div class="image-overlay">
-            <h1>KK Pharma</h1>
-            <p>Trusted Pharmaceutical Solutions<br>
-               Quality • Safety • Innovation</p>
+            <h1><?php echo htmlspecialchars(get_content('auth_overlay_title', 'KK Pharma')); ?></h1>
+            <p><?php echo get_content('auth_overlay_desc', 'Trusted Pharmaceutical Solutions<br>Quality • Safety • Innovation'); ?></p>
         </div>
     </div>
 
     <div class="form-section">
         <div class="login-box">
 
-            <h2>Login</h2>
-            <p class="text-center mb-4">Access your KK Pharma account</p>
+            <h2><?php echo htmlspecialchars(get_content('login_box_title', 'Login')); ?></h2>
+            <p class="text-center mb-4"><?php echo htmlspecialchars(get_content('login_box_desc', 'Access your KK Pharma account')); ?></p>
 
             <form id="loginForm" action="login.php" method="post">
                 <?php if (isset($login_error)): ?>
                     <div class="alert alert-danger" role="alert" style="font-size: 14px; padding: 10px;">
                         <?php echo $login_error; ?>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if (!empty($success_msg)): ?>
+                    <div class="alert alert-success" role="alert" style="font-size: 14px; padding: 10px;">
+                        <?php echo $success_msg; ?>
                     </div>
                 <?php endif; ?>
 

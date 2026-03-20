@@ -1,86 +1,96 @@
 <?php
-// Start session for potential future use (e.g., login system)
 session_start();
-
-// Include database connection
+include_once 'mailer.php';
 include_once("Database/db_config.php");
 
-// Initialize variables
 $errors = [];
 $success = "";
-$inputs = ['fname' => '', 'lname' => '', 'email' => '', 'mobile' => '', 'dept' => '', 'exp' => '', 'address' => ''];
+
+$inputs = [
+    'fname' => '',
+    'lname' => '',
+    'email' => '',
+    'mobile' => '',
+    'dept' => '',
+    'exp' => '',
+    'address' => ''
+];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // 1. Sanitize and Retrieve Input
     foreach ($inputs as $key => $val) {
         if (isset($_POST[$key])) {
             $inputs[$key] = htmlspecialchars(trim($_POST[$key]));
         }
     }
+
     $pass = $_POST['pass'] ?? '';
     $cpass = $_POST['cpass'] ?? '';
 
-    // 2. Server-Side Validation
+    // Validation
     if (empty($inputs['fname'])) {
         $errors['fname'] = "First Name is required.";
     }
+
     if (empty($inputs['lname'])) {
         $errors['lname'] = "Last Name is required.";
     }
 
     if (empty($inputs['email'])) {
         $errors['email'] = "Email is required.";
-    } elseif (!filter_var($inputs['email'], FILTER_VALIDATE_EMAIL)) {
+    } 
+    elseif (!filter_var($inputs['email'], FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = "Invalid email format.";
-    } else {
-        // Check if email already exists
-        $checkEmail = $con->prepare("SELECT id FROM register WHERE email = ?");
+    } 
+    else {
+        $checkEmail = $con->prepare("SELECT id FROM register WHERE email=?");
         $checkEmail->bind_param("s", $inputs['email']);
         $checkEmail->execute();
         $checkEmail->store_result();
+
         if ($checkEmail->num_rows > 0) {
-            $errors['email'] = "This email is already registered.";
+            $errors['email'] = "Email already registered.";
         }
         $checkEmail->close();
     }
 
     if (empty($inputs['mobile']) || !is_numeric($inputs['mobile']) || strlen($inputs['mobile']) != 10) {
-        $errors['mobile'] = "Valid 10-digit mobile number required.";
+        $errors['mobile'] = "Enter valid 10 digit mobile number.";
     }
 
     if (empty($inputs['dept'])) {
-        $errors['dept'] = "Please select a department.";
+        $errors['dept'] = "Please select department.";
     }
 
     if (empty($inputs['exp']) || !is_numeric($inputs['exp'])) {
-        $errors['exp'] = "Experience must be a number.";
+        $errors['exp'] = "Experience must be numeric.";
     }
 
     if (empty($inputs['address'])) {
-        $errors['address'] = "Address is required.";
+        $errors['address'] = "Address required.";
     }
 
     if (empty($pass)) {
-        $errors['pass'] = "Password is required.";
-    } elseif (strlen($pass) < 6) {
-        $errors['pass'] = "Password must be at least 6 characters.";
+        $errors['pass'] = "Password required.";
+    } 
+    elseif (strlen($pass) < 6) {
+        $errors['pass'] = "Password must be minimum 6 characters.";
     }
 
     if ($pass !== $cpass) {
         $errors['cpass'] = "Passwords do not match.";
     }
 
-    // 3. Insert into Database if no errors
     if (empty($errors)) {
-        // Hash the password for security
         $hashed_password = password_hash($pass, PASSWORD_DEFAULT);
+        $vkey = md5(time() . $inputs['email']);
 
-        $stmt = $con->prepare("INSERT INTO register (first_name, last_name, email, mobile, department, experience, address, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $con->prepare("INSERT INTO register 
+        (first_name, last_name, email, mobile, department, experience, address, password, vkey) 
+        VALUES (?,?,?,?,?,?,?,?,?)");
 
-        // Bind parameters: s=string
         $stmt->bind_param(
-            "ssssssss",
+            "sssssssss",
             $inputs['fname'],
             $inputs['lname'],
             $inputs['email'],
@@ -88,24 +98,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $inputs['dept'],
             $inputs['exp'],
             $inputs['address'],
-            $hashed_password
+            $hashed_password,
+            $vkey
         );
 
         if ($stmt->execute()) {
-            $success = "Registration successful! You can now login.";
-            // Clear form inputs after success
-            $inputs = array_map(function () {
-                return '';
-            }, $inputs);
+            $fullname = $inputs['fname']." ".$inputs['lname'];
+            $to = $inputs['email'];
+            $subject = "Registration Successful - Please Verify Your Email - KK Pharma";
+            
+            $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+            $host = $_SERVER['HTTP_HOST'];
+            $script_dir = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+            $verification_link = $protocol . "://" . $host . $script_dir . "/verify.php?vkey=" . $vkey;
+
+            $body = "<h2>Welcome to KK Pharma, $fullname</h2>
+                     <p>Your account has been successfully created.</p>
+                     <p>Please click the link below to verify your email address:</p>
+                     <p><a href='$verification_link'>Verify Email Address</a></p>";
+
+            sendEmail($to, $subject, $body, "");
+            setcookie("success", "Registration successful! Please check your email to verify your account.", time() + 5, "/");
+            
+            echo "<script>window.location.href='login.php';</script>";
+            exit;
         } else {
-            $errors['db'] = "Error: " . $stmt->error;
+            setcookie("error", "Registration failed!", time() + 5, "/");
+            echo "<script>window.location.href='register.php';</script>";
+            exit;
         }
         $stmt->close();
     }
 }
-?>
 
-<?php include_once 'header.php'; ?>
+include_once 'header.php'; 
+?>
 
 <style>
     :root {
@@ -177,7 +204,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         resize: none;
     }
 
-    /* RED BOX ERROR STYLE */
     .text-danger.small {
         color: #721c24 !important;
         background-color: #f8d7da;
@@ -186,7 +212,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         border-radius: 4px;
         margin-top: 5px;
         display: block;
-        /* Force display for PHP errors */
         font-weight: 500;
     }
 
@@ -228,11 +253,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="col-lg-10">
                 <div class="register-wrapper">
                     <div class="row g-0">
-                        <!-- Left Side Info -->
                         <div class="col-lg-4 d-none d-lg-block">
                             <div class="register-info">
-                                <h2>KK Pharma</h2>
-                                <p>Join a trusted pharmaceutical company committed to quality healthcare and innovation.</p>
+                                <h2><?php echo htmlspecialchars(get_content('auth_overlay_title', 'KK Pharma')); ?></h2>
+                                <p><?php echo get_content('auth_overlay_desc', 'Trusted Pharmaceutical Solutions<br>Quality • Safety • Innovation'); ?></p>
                                 <ul>
                                     <li>✔ WHO-GMP Certified Manufacturing</li>
                                     <li>✔ Global Healthcare Standards</li>
@@ -242,12 +266,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
                         </div>
 
-                        <!-- Right Side Form -->
                         <div class="col-lg-8">
                             <div class="register-form">
-                                <h3>Create Your Account</h3>
+                                <h3><?php echo htmlspecialchars(get_content('register_box_title', 'Create Account')); ?></h3>
 
-                                <!-- Success Message -->
                                 <?php if (!empty($success)): ?>
                                     <div class="alert-success">
                                         <?php echo $success; ?>
@@ -256,7 +278,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                                 <form method="post" id="regform" action="register.php" novalidate>
                                     <div class="row">
-                                        <!-- First Name -->
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">First Name</label>
                                             <input type="text" class="form-control <?php echo isset($errors['fname']) ? 'is-invalid' : ''; ?>" name="fname" value="<?php echo $inputs['fname']; ?>">
@@ -265,7 +286,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <?php endif; ?>
                                         </div>
 
-                                        <!-- Last Name -->
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Last Name</label>
                                             <input type="text" class="form-control <?php echo isset($errors['lname']) ? 'is-invalid' : ''; ?>" name="lname" value="<?php echo $inputs['lname']; ?>">
@@ -274,7 +294,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <?php endif; ?>
                                         </div>
 
-                                        <!-- Email -->
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Email</label>
                                             <input type="email" class="form-control <?php echo isset($errors['email']) ? 'is-invalid' : ''; ?>" name="email" value="<?php echo $inputs['email']; ?>">
@@ -283,7 +302,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <?php endif; ?>
                                         </div>
 
-                                        <!-- Mobile -->
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Mobile</label>
                                             <input type="text" class="form-control <?php echo isset($errors['mobile']) ? 'is-invalid' : ''; ?>" name="mobile" value="<?php echo $inputs['mobile']; ?>">
@@ -292,7 +310,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <?php endif; ?>
                                         </div>
 
-                                        <!-- Department -->
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Department</label>
                                             <select class="form-select <?php echo isset($errors['dept']) ? 'is-invalid' : ''; ?>" name="dept">
@@ -307,7 +324,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <?php endif; ?>
                                         </div>
 
-                                        <!-- Experience -->
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Experience (Years)</label>
                                             <input type="text" class="form-control <?php echo isset($errors['exp']) ? 'is-invalid' : ''; ?>" name="exp" value="<?php echo $inputs['exp']; ?>">
@@ -316,7 +332,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <?php endif; ?>
                                         </div>
 
-                                        <!-- Address -->
                                         <div class="col-12 mb-3">
                                             <label class="form-label">Address</label>
                                             <textarea class="form-control <?php echo isset($errors['address']) ? 'is-invalid' : ''; ?>" name="address"><?php echo $inputs['address']; ?></textarea>
@@ -325,7 +340,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <?php endif; ?>
                                         </div>
 
-                                        <!-- Password -->
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Password</label>
                                             <input type="password" class="form-control <?php echo isset($errors['pass']) ? 'is-invalid' : ''; ?>" id="pass" name="pass">
@@ -334,7 +348,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <?php endif; ?>
                                         </div>
 
-                                        <!-- Confirm Password -->
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Confirm Password</label>
                                             <input type="password" class="form-control <?php echo isset($errors['cpass']) ? 'is-invalid' : ''; ?>" name="cpass">
@@ -361,7 +374,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </section>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Assumed you have custom JS for frontend validation logic in layout.js -->
 <script src="js/layout.js"></script>
 
 <?php include_once 'footer.php'; ?>

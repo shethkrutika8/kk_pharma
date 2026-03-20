@@ -22,7 +22,6 @@ include_once 'header.php';
             color: #7c9ec0;
         }
 
-        /* image ne change karv mate specific time e*/
         .carousel-item img {
             height: 520px;
             object-fit: cover;
@@ -34,26 +33,21 @@ include_once 'header.php';
             border-radius: 20px;
         }
 
-        /* ema lakhela caption ne font set karva mate*/
         .carousel-caption h2 {
             font-weight: 500;
         }
 
-        /* tile ma about kk pharam ne lakhyu che eni font size
-        set karva mate*/
         .section-title {
             font-weight: 700;
             margin-bottom: 15px;
         }
 
-        /* section about ni niche rakhela batha eriting ne proper formate ma set karva mate*/
         .section-subtitle {
             color: #6c757d;
             max-width: 700px;
             margin: auto;
         }
 
-        /* information box ne set karva mate ena arrow jai tyare set karva mate*/
         .info-box {
             background: #fff;
             border-radius: 20px;
@@ -64,7 +58,6 @@ include_once 'header.php';
             height: 100%;
         }
 
-        /* box na icons ne color aapva mate ne padding set karva mate*/
         .info-box i {
             font-size: 40px;
             color: #00a8ff;
@@ -75,7 +68,6 @@ include_once 'header.php';
             transform: translateY(-10px);
         }
 
-        /* product mate */
         .product-box {
             background: linear-gradient(135deg, #ffffff, #f1f6fb);
             padding: 30px;
@@ -86,32 +78,25 @@ include_once 'header.php';
             height: 100%;
         }
 
-        /* product na icon ni size moti karva mate ne color change karva mate */
         .product-box i {
             font-size: 42px;
             color: #2c3e50;
             margin-bottom: 15px;
         }
 
-        /* ema arrow jai tyare color change karva mate */
         .product-box:hover {
             background: linear-gradient(135deg, #2c3e50, #1f2f3f);
             color: #fff;
         }
 
-        /*product box na icon ne arrow lai jai tyare color change karva mate*/
         .product-box:hover i {
             color: #00d1b2;
         }
-
-        /* */
-
 
         .stats h3 {
             font-weight: 700;
         }
 
-        /*contanct mate  */
         .contact-box {
             background: #fff;
             border-radius: 25px;
@@ -123,13 +108,11 @@ include_once 'header.php';
 
 <body>
 
-    <!--navbar-->
     <div class="container">
         <?php if (isset($_SESSION['login_success_msg'])): ?>
             <div class="alert alert-success alert-dismissible fade show mt-3 mb-0" role="alert">
                 <?php 
                 echo $_SESSION['login_success_msg']; 
-                // Unset the message so it only shows once
                 unset($_SESSION['login_success_msg']);
                 ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -141,22 +124,21 @@ include_once 'header.php';
 
                 <div class="carousel-item active">
                     <img src="gallary/front_!.png" class="d-block w-100">
-
                 </div>
 
                 <div class="carousel-item">
                     <img src="gallary/medicine-2.jpg" class="d-block w-100">
                     <div class="carousel-caption">
-                        <h2>WHO-GMP Certified Manufacturing</h2>
-                        <p>International standards you can rely on</p>
+                        <h2><?php echo htmlspecialchars(get_content('home_carousel1_title', 'WHO-GMP Certified Manufacturing')); ?></h2>
+                        <p><?php echo htmlspecialchars(get_content('home_carousel1_subtitle', 'International standards you can rely on')); ?></p>
                     </div>
                 </div>
 
                 <div class="carousel-item">
                     <img src="gallary/largest-pharmaceutical-companies.jpg.webp" class="d-block w-100">
                     <div class="carousel-caption">
-                        <h2>Innovation Driven Healthcare</h2>
-                        <p>Research, technology and patient care combined</p>
+                        <h2><?php echo htmlspecialchars(get_content('home_carousel2_title', 'Innovation Driven Healthcare')); ?></h2>
+                        <p><?php echo htmlspecialchars(get_content('home_carousel2_subtitle', 'Research, technology and patient care combined')); ?></p>
                     </div>
                 </div>
 
@@ -166,34 +148,33 @@ include_once 'header.php';
         <!-- ===== ABOUT ===== -->
         <section id="about" class="py-5">
             <div class="container text-center">
-                <h2 class="section-title">About KK Pharma</h2>
+                <h2 class="section-title"><?php echo htmlspecialchars(get_content('home_about_title', 'About KK Pharma')); ?></h2>
                 <p class="section-subtitle mb-5">
-                    KK Pharma is a fast-growing pharmaceutical company committed to manufacturing
-                    high-quality, affordable and reliable medicines that improve lives across the globe.
+                    <?php echo htmlspecialchars(get_content('home_about_desc', 'KK Pharma is a fast-growing pharmaceutical company committed to manufacturing high-quality, affordable and reliable medicines that improve lives across the globe.')); ?>
                 </p>
 
                 <div class="row g-4">
                     <div class="col-md-4">
                         <div class="info-box">
                             <i class="bi bi-heart-pulse"></i>
-                            <h5>Our Mission</h5>
-                            <p>To enhance patient wellbeing by providing safe, effective and affordable medicines.</p>
+                            <h5><?php echo htmlspecialchars(get_content('home_mission_title', 'Our Mission')); ?></h5>
+                            <p><?php echo htmlspecialchars(get_content('home_mission_desc', 'To enhance patient wellbeing by providing safe, effective and affordable medicines.')); ?></p>
                         </div>
                     </div>
 
                     <div class="col-md-4">
                         <div class="info-box">
                             <i class="bi bi-globe2"></i>
-                            <h5>Our Vision</h5>
-                            <p>To become a globally trusted pharmaceutical brand delivering excellence.</p>
+                            <h5><?php echo htmlspecialchars(get_content('home_vision_title', 'Our Vision')); ?></h5>
+                            <p><?php echo htmlspecialchars(get_content('home_vision_desc', 'To become a globally trusted pharmaceutical brand delivering excellence.')); ?></p>
                         </div>
                     </div>
 
                     <div class="col-md-4">
                         <div class="info-box">
                             <i class="bi bi-shield-check"></i>
-                            <h5>Our Values</h5>
-                            <p>Quality, Integrity, Innovation and Patient-Centric Care.</p>
+                            <h5><?php echo htmlspecialchars(get_content('home_values_title', 'Our Values')); ?></h5>
+                            <p><?php echo htmlspecialchars(get_content('home_values_desc', 'Quality, Integrity, Innovation and Patient-Centric Care.')); ?></p>
                         </div>
                     </div>
                 </div>
@@ -204,69 +185,67 @@ include_once 'header.php';
         <section class="container my-5">
             <div class="stats row text-center">
                 <div class="col-md-3">
-                    <h3>10+</h3>
-                    <p>Years of Experience</p>
+                    <h3><?php echo htmlspecialchars(get_content('home_stats_exp', '10+')); ?></h3>
+                    <p><?php echo htmlspecialchars(get_content('home_stats_exp_text', 'Years of Experience')); ?></p>
                 </div>
                 <div class="col-md-3">
-                    <h3>150+</h3>
-                    <p>Products Portfolio</p>
+                    <h3><?php echo htmlspecialchars(get_content('home_stats_products', '150+')); ?></h3>
+                    <p><?php echo htmlspecialchars(get_content('home_stats_products_text', 'Products Portfolio')); ?></p>
                 </div>
                 <div class="col-md-3">
-                    <h3>20+</h3>
-                    <p>Countries Served</p>
+                    <h3><?php echo htmlspecialchars(get_content('home_stats_countries', '20+')); ?></h3>
+                    <p><?php echo htmlspecialchars(get_content('home_stats_countries_text', 'Countries Served')); ?></p>
                 </div>
                 <div class="col-md-3">
-                    <h3>100%</h3>
-                    <p>Quality Compliance</p>
+                    <h3><?php echo htmlspecialchars(get_content('home_stats_quality', '100%')); ?></h3>
+                    <p><?php echo htmlspecialchars(get_content('home_stats_quality_text', 'Quality Compliance')); ?></p>
                 </div>
             </div>
         </section>
 
-        <!-- product box mate container lidhu-->
         <section id="products" class="py-5 bg-light">
             <div class="container text-center">
-                <h2 class="section-title">Our Product Range</h2>
+                <h2 class="section-title"><?php echo htmlspecialchars(get_content('home_products_title', 'Our Product Range')); ?></h2>
                 <p class="section-subtitle mb-5">
-                    We offer a comprehensive portfolio covering multiple therapeutic segments.
+                    <?php echo htmlspecialchars(get_content('home_products_desc', 'We offer a comprehensive portfolio covering multiple therapeutic segments.')); ?>
                 </p>
 
                 <div class="row g-4">
                     <div class="col-md-3">
                         <div class="product-box">
                             <i class="bi bi-capsule"></i>
-                            <h6>Tablets</h6>
-                            <p>Antibiotics, Analgesics, Anti-inflammatory & Vitamins</p>
+                            <h6><?php echo htmlspecialchars(get_content('home_product1_title', 'Tablets')); ?></h6>
+                            <p><?php echo htmlspecialchars(get_content('home_product1_desc', 'Antibiotics, Analgesics, Anti-inflammatory & Vitamins')); ?></p>
                         </div>
                     </div>
 
                     <div class="col-md-3">
                         <div class="product-box">
                             <i class="bi bi-droplet"></i>
-                            <h6>Syrups</h6>
-                            <p>Pediatric, Cough & Nutritional Formulations</p>
+                            <h6><?php echo htmlspecialchars(get_content('home_product2_title', 'Syrups')); ?></h6>
+                            <p><?php echo htmlspecialchars(get_content('home_product2_desc', 'Pediatric, Cough & Nutritional Formulations')); ?></p>
                         </div>
                     </div>
 
                     <div class="col-md-3">
                         <div class="product-box">
                             <i class="bi bi-prescription2"></i>
-                            <h6>Capsules</h6>
-                            <p>Nutraceuticals and Specialty Supplements</p>
+                            <h6><?php echo htmlspecialchars(get_content('home_product3_title', 'Capsules')); ?></h6>
+                            <p><?php echo htmlspecialchars(get_content('home_product3_desc', 'Nutraceuticals and Specialty Supplements')); ?></p>
                         </div>
                     </div>
 
                     <div class="col-md-3">
                         <div class="product-box">
                             <i class="bi bi-hospital"></i>
-                            <h6>Injectables</h6>
-                            <p>Critical Care & Hospital Use Medicines</p>
+                            <h6><?php echo htmlspecialchars(get_content('home_product4_title', 'Injectables')); ?></h6>
+                            <p><?php echo htmlspecialchars(get_content('home_product4_desc', 'Critical Care & Hospital Use Medicines')); ?></p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- contact mate container lidhu-->
         <section id="contact" class="py-5">
             <div class="container">
                 <h2 class="section-title text-center mb-4">Contact Us</h2>
@@ -274,10 +253,10 @@ include_once 'header.php';
                 <div class="row justify-content-center">
                     <div class="col-md-7">
                         <div class="contact-box text-center">
-                            <h5>KK Pharma Pvt. Ltd.</h5>
-                            <p>Email: info@kkpharma.com</p>
-                            <p>Phone: +91 98765 43210</p>
-                            <p>Ahmedabad, Gujarat, India</p>
+                            <h5><?php echo htmlspecialchars(get_content('contact_info_title', 'KK Pharma Pvt. Ltd.')); ?></h5>
+                            <p>Email: <?php echo htmlspecialchars(get_content('contact_email', 'info@kkpharma.com')); ?></p>
+                            <p>Phone: <?php echo htmlspecialchars(get_content('contact_phone', '+91 98765 43210')); ?></p>
+                            <p><?php echo htmlspecialchars(get_content('contact_address', 'Ahmedabad, Gujarat, India')); ?></p>
                         </div>
                     </div>
                 </div>
@@ -285,7 +264,6 @@ include_once 'header.php';
         </section>
 
 </body>
-
 </html>
 
 <?php
