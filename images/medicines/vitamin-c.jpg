@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150">
+  <rect width="200" height="150" fill="#ffebee"/>
+  <rect x="50" y="30" width="100" height="90" rx="10" fill="#f44336"/>
+  <text x="100" y="80" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">Vitamin C</text>
+  <text x="100" y="100" text-anchor="middle" fill="white" font-family="Arial" font-size="12">Tablets</text>
+</svg>
