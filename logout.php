@@ -1,17 +1,23 @@
 <?php
-<<<<<<< HEAD
-require_once 'kk_pharma/after_login/config.php';
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 
-// Destroy all session variables
-session_unset();
-session_destroy();
+$_SESSION = [];
 
-// Redirect to login page
-=======
-session_start();
-session_unset();
+if (ini_get('session.use_cookies')) {
+    $params = session_get_cookie_params();
+    setcookie(
+        session_name(),
+        '',
+        time() - 42000,
+        $params['path'],
+        $params['domain'],
+        $params['secure'],
+        $params['httponly']
+    );
+}
+
 session_destroy();
->>>>>>> c6775067838e23982daa6c2b4f2a0e39c1aeb335
-header("Location: login.php");
-exit();
-?>
+header('Location: login.php');
+exit;
