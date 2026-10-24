@@ -1,16 +1,28 @@
 <?php
+mysqli_report(MYSQLI_REPORT_OFF);
+
 //step-1 connect with database
-$con = mysqli_connect("localhost", "root", "");
+$con = @mysqli_connect("localhost", "root", "");
+if (!$con) {
+    error_log('Database connection failed: ' . mysqli_connect_error());
+    return;
+}
+
+if (!mysqli_set_charset($con, 'utf8mb4')) {
+    error_log('Database charset setup failed: ' . mysqli_error($con));
+}
 
 //step-2 create database
 $create_db = "CREATE DATABASE IF NOT EXISTS kk_pharma";
-mysqli_query($con, $create_db);
+if (!@mysqli_query($con, $create_db)) {
+    error_log('Database creation failed: ' . mysqli_error($con));
+    return;
+}
 
 //step-3 select database
-try {
-    mysqli_select_db($con, "kk_pharma");
-} catch (Exception) {
-    echo "Error in connecting with DB";
+if (!@mysqli_select_db($con, "kk_pharma")) {
+    error_log('Database selection failed: ' . mysqli_error($con));
+    return;
 }
 
 //step-4 create table is a one time process so we can comment this code after creating table

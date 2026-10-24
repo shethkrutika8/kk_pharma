@@ -1,5 +1,13 @@
 <?php
-include_once 'header.php';
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING & ~E_DEPRECATED);
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+include_once __DIR__ . '/header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -109,10 +117,11 @@ include_once 'header.php';
 <body>
 
     <div class="container">
-        <?php if (isset($_SESSION['login_success_msg'])): ?>
+        <?php if (!empty($_SESSION['login_success_msg'])): ?>
             <div class="alert alert-success alert-dismissible fade show mt-3 mb-0" role="alert">
-                <?php 
-                echo $_SESSION['login_success_msg']; 
+                <?php
+                $loginSuccessMessage = htmlspecialchars((string) $_SESSION['login_success_msg'], ENT_QUOTES, 'UTF-8');
+                echo $loginSuccessMessage;
                 unset($_SESSION['login_success_msg']);
                 ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
